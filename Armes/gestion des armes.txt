@@ -1,0 +1,78 @@
+test 1
+
+Armes :
+  - Conditions
+  - nombre de ball disponible
+  - nombre de chargeur disponible
+     - nombre minimum de ball par chargeur
+     - nombre maximum de ball par chargeur
+
+
+  style:
+    - actuel nombre balle / totals des balles
+
+1 chargeur = nombre maximum de ball
+
+totals des balles = nombre de chargeurs * 
+
+------------------------------
+**** test 2 ****
+
+type d'armes:
+	noms des armes[]
+	
+	min_max des armes[]
+	degats des armes[]
+	vitesse des balles[]
+	rates des balles[]
+	
+	sinon un dict qui contient les 5 avec key=nom de l'arme
+
+Chargeur :
+	nombre de balle disponible
+	//degat de la balle
+
+Armes :
+	nom de larme
+	nombre minimum de balle = 0
+	nombre maximum de balle
+
+	arme : type d'armes
+
+	Chargeur [] (tableau qui defini le nombre de chargeur et chaque chargeur contient le nombre de ball utilis�) 
+	Chargeur actuel	
+
+	fonction trouver_chargeur_plein() :
+		pour chaque Chargeur [] :
+			si un chargeur.nombre de balle dispo == Chargeur.nombre maximum de ball:
+				return indice
+		return -1 // reste selement un chargeur a moiti� rempli
+	
+	fonction recharger_ball :
+		x = trouver_chargeur_plein()
+
+		// le cas ou reste un chargeur a moiti� rempli
+		// et actuel = 0 ou rempli
+		si x == -1:
+			temp nombre actuel = actuel + Chargeur[0]
+			si temp nombre actuel > maximum de balle:
+				Chargeur[0] = temp nombre actuel - maximum de balle
+				actuel = maximum de balle
+			sinon
+				actuel = temp nombre actuel
+			return;
+
+		sinon :
+			// si l'actuel chargeur est vide
+			// utilise un nouveau rempli
+			si actuel == 0:
+				actuel = chargeur[x]
+				delete chargeur[x]
+			sinon:
+				temp actuel = actuel
+				actuel = chargeur[x]
+				chargeur[x] = temp actuel
+	
+affichage dans le HUB:
+	nombre de ball dans le chargeur actuel utilis� / (sum(Chargeur nombre ball))
+
