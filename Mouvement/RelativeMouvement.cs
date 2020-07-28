@@ -36,6 +36,27 @@ public class RelativeMouvement : MonoBehaviour {
 
 	public int shootValue = 2;
 
+	private bool uiInventory = false;
+
+	private bool reactiveRafal = true;
+
+	void Awake()
+	{
+		Messenger<bool>.AddListener(GameEvent.UI_INVENTORY, OnUiInventory);
+	}
+
+	void OnDestroy()
+	{
+		Messenger<bool>.RemoveListener(GameEvent.UI_INVENTORY, OnUiInventory);
+	}
+
+	private void OnUiInventory(bool res)
+	{
+		uiInventory = res;
+		if (res)
+			reactiveRafal = false;
+	}
+
 	// Use this for initialization
 	void Start () {
 		_charController = GetComponent<CharacterController>();
@@ -56,7 +77,7 @@ public class RelativeMouvement : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		if (Managers.Player.health > 0) {
+		if (Managers.Player.health > 0 && !uiInventory) {
 			bool hitGround = false;
 			RaycastHit hit;
 
@@ -126,7 +147,9 @@ public class RelativeMouvement : MonoBehaviour {
 
 			_charController.Move(movement);
 
-			if ((Input.GetMouseButtonDown(0) || Input.GetButton("Fire1")) && Time.time > nextFire) {
+			if (Input.GetMouseButtonDown(0)) reactiveRafal = true;
+
+			if (reactiveRafal && (Input.GetMouseButtonDown(0) || Input.GetButton("Fire1")) && Time.time > nextFire) {
 					nextFire = Time.time + fireRate;
 
 					Camera targetCamera = new Camera();

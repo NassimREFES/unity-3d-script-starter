@@ -6,12 +6,13 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour {
 	public float speed = 4.0f;
+	public float speedWhenUI = 0.5f;
 	public float obstacleRange = 3.0f;
 	public float firstDetectionRange = 25.0f; // 1er cercle de detection
 
 	public float secondDetectionRange = 10.0f; // 2eme cercle de detection
 
-	public float thirdDetectionRangeOffset = 2.0f; // 2eme cercle de detection
+	public float thirdDetectionRangeOffset = 2.0f; // 3eme cercle de detection
 
 	[SerializeField] private GameObject fireballPrefab;
 	private GameObject _fireball;
@@ -46,6 +47,24 @@ public class EnemyAI : MonoBehaviour {
 	private Transform PlayerPosition;
 
 	private NavMeshAgent InternalNavMeshAgent;
+
+	void Awake()
+	{
+		Messenger<bool>.AddListener(GameEvent.UI_INVENTORY, OnUiInventory);
+	}
+
+	void OnDestroy()
+	{
+		Messenger<bool>.RemoveListener(GameEvent.UI_INVENTORY, OnUiInventory);
+	}
+
+	private void OnUiInventory(bool res)
+	{
+		if (res)
+			InternalNavMeshAgent.speed = speedWhenUI;
+		else
+			InternalNavMeshAgent.speed = speed;
+	}
 
 	// Use this for initialization
 	void Start () {

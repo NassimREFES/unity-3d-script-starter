@@ -27,8 +27,6 @@ public class EnemyState : MonoBehaviour {
 
 	private IEnumerator Die() 
 	{
-		//this.transform.Rotate(-80, 0, 0);
-		//this.GetComponent<NavMeshAgent>().speed = 0;
 		this.GetComponent<NavMeshAgent>().destination = this.transform.position;
 		this.GetComponent<EnemyAI>().SetAlive(false);
 		yield return new WaitForSeconds(5f);

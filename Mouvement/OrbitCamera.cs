@@ -22,9 +22,26 @@ public class OrbitCamera : MonoBehaviour {
 	public float minMouseXAngleTPS = -60.0f;
 	public float maxMouseXAngle = 65.0f;
 
+	private bool uiInventory = false;
+
 	// false : keys left right ne fait pas rotate pour la caméra
 	// autour du player
 	public bool ViewStyle;
+
+	void Awake()
+	{
+		Messenger<bool>.AddListener(GameEvent.UI_INVENTORY, OnUiInventory);
+	}
+
+	void OnDestroy()
+	{
+		Messenger<bool>.RemoveListener(GameEvent.UI_INVENTORY, OnUiInventory);
+	}
+
+	private void OnUiInventory(bool res)
+	{
+		uiInventory = res;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -59,21 +76,23 @@ public class OrbitCamera : MonoBehaviour {
 		// 	_rotY += horInput * rotationSpeed;
 		// }
 		//else {
-		_rotY += Input.GetAxis("Mouse X") * rotationSpeed;
-		_rotX -= Input.GetAxis("Mouse Y") * rotationSpeed;
-		_rotX = Mathf.Clamp(_rotX, minMouseXAngleTPS, maxMouseXAngle);
+		if (!uiInventory) {
+			_rotY += Input.GetAxis("Mouse X") * rotationSpeed;
+			_rotX -= Input.GetAxis("Mouse Y") * rotationSpeed;
+			_rotX = Mathf.Clamp(_rotX, minMouseXAngleTPS, maxMouseXAngle);
 
-		Quaternion rotation = Quaternion.Euler(_rotX, _rotY, 0);
+			Quaternion rotation = Quaternion.Euler(_rotX, _rotY, 0);
 
-		transform.position = targetTPS.position - (rotation * _offsetTPS);
-		transform.LookAt(targetTPS);
-		rotation = Quaternion.Euler(0, _rotY, 0);
-		if(ViewStyle) {
-			if (Camera_Controller.camera_status == CameraStatus.camera_fps) 
-				target.rotation = rotation;//Quaternion.Slerp(target.rotation, rotation, 15.0f*Time.deltaTime);
-			else if (Camera_Controller.camera_status == CameraStatus.camera_tps)
-				target.rotation = rotation; //target.rotation = Quaternion.Slerp(target.rotation, rotation, 10.0f*Time.deltaTime);
-				
+			transform.position = targetTPS.position - (rotation * _offsetTPS);
+			transform.LookAt(targetTPS);
+			rotation = Quaternion.Euler(0, _rotY, 0);
+			if(ViewStyle) {
+				if (Camera_Controller.camera_status == CameraStatus.camera_fps) 
+					target.rotation = rotation;//Quaternion.Slerp(target.rotation, rotation, 15.0f*Time.deltaTime);
+				else if (Camera_Controller.camera_status == CameraStatus.camera_tps)
+					target.rotation = rotation; //target.rotation = Quaternion.Slerp(target.rotation, rotation, 10.0f*Time.deltaTime);
+					
+			}
 		}
 
 		// scroll mouse pour le zoom (utiliisation dans camera collision)
